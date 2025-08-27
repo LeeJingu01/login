@@ -42,6 +42,8 @@ public class JwtTokenProvider {
                 .claim("nick", nickname) // 편의를 위해 닉네임 넣음, DB에서는 닉네임 not null로 해야됨
                 .claim("type", "access")
                 .issuedAt(Date.from(now))
+                // .issuer("your-service")
+                // .id(Long.toHexString(System.nanoTime()))
                 .expiration(Date.from(now.plus(accessExpMin, ChronoUnit.MINUTES)))
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
