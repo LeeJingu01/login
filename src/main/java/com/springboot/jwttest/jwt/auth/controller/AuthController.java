@@ -1,8 +1,8 @@
-package com.springboot.jwttest.auth.controller;
+package com.springboot.jwttest.jwt.auth.controller;
 
-import com.springboot.jwttest.auth.dto.LoginReq;
-import com.springboot.jwttest.auth.dto.SignUpReq;
-import com.springboot.jwttest.auth.dto.TokenRes;
+import com.springboot.jwttest.jwt.auth.dto.LoginReq;
+import com.springboot.jwttest.jwt.auth.dto.SignUpReq;
+import com.springboot.jwttest.jwt.auth.dto.TokenRes;
 import com.springboot.jwttest.user.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

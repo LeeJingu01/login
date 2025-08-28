@@ -1,12 +1,12 @@
 package com.springboot.jwttest.user.service;
 
 
-import com.springboot.jwttest.auth.dto.LoginReq;
-import com.springboot.jwttest.auth.dto.SignUpReq;
-import com.springboot.jwttest.auth.dto.TokenRes;
-import com.springboot.jwttest.security.JwtTokenProvider;
-import com.springboot.jwttest.security.TokenHashUtil;
-import com.springboot.jwttest.token.mapper.RefreshTokenMapper;
+import com.springboot.jwttest.jwt.auth.dto.LoginReq;
+import com.springboot.jwttest.jwt.auth.dto.SignUpReq;
+import com.springboot.jwttest.jwt.auth.dto.TokenRes;
+import com.springboot.jwttest.jwt.security.JwtTokenProvider;
+import com.springboot.jwttest.jwt.security.TokenHashUtil;
+import com.springboot.jwttest.jwt.token.mapper.RefreshTokenMapper;
 import com.springboot.jwttest.user.mapper.UserMapper;
 import com.springboot.jwttest.user.vo.User;
 import lombok.RequiredArgsConstructor;

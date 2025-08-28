@@ -1,4 +1,4 @@
-package com.springboot.jwttest.token.vo;
+package com.springboot.jwttest.jwt.token.vo;
 
 import lombok.Data;
 

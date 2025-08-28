@@ -1,4 +1,4 @@
-package com.springboot.jwttest.security;
+package com.springboot.jwttest.jwt.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

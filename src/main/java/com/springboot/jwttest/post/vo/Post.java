@@ -1,12 +1,12 @@
-package com.springboot.jwttest.posts.vo;
+package com.springboot.jwttest.post.vo;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class Posts {
-    private int postsId;
+public class Post {
+    private int postId;
     private int userId;
     private String title;
     private String content;

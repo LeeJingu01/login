@@ -1,6 +1,6 @@
-package com.springboot.jwttest.auth.controller;
+package com.springboot.jwttest.jwt.auth.controller;
 
-import com.springboot.jwttest.auth.dto.MeRes;
+import com.springboot.jwttest.jwt.auth.dto.MeRes;
 import com.springboot.jwttest.user.mapper.UserMapper;
 import com.springboot.jwttest.user.vo.User;
 import lombok.RequiredArgsConstructor;

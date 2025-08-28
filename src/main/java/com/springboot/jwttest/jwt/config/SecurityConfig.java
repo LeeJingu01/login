@@ -1,8 +1,7 @@
-package com.springboot.jwttest.config;
+package com.springboot.jwttest.jwt.config;
 
-import com.springboot.jwttest.security.JwtAuthFilter;
+import com.springboot.jwttest.jwt.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

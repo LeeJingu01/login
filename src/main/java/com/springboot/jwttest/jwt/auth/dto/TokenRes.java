@@ -1,4 +1,4 @@
-package com.springboot.jwttest.auth.dto;
+package com.springboot.jwttest.jwt.auth.dto;
 
 public record TokenRes(
         String accessToken,

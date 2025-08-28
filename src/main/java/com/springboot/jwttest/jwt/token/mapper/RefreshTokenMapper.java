@@ -1,4 +1,4 @@
-package com.springboot.jwttest.token.mapper;
+package com.springboot.jwttest.jwt.token.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

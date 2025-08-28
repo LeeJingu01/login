@@ -1,4 +1,4 @@
-package com.springboot.jwttest.security;
+package com.springboot.jwttest.jwt.security;
 
 import com.springboot.jwttest.user.mapper.UserMapper;
 import com.springboot.jwttest.user.vo.User;

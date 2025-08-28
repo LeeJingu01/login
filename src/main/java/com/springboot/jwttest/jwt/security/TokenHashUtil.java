@@ -1,4 +1,4 @@
-package com.springboot.jwttest.security;
+package com.springboot.jwttest.jwt.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

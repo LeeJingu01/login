@@ -1,4 +1,4 @@
-package com.springboot.jwttest.auth.dto;
+package com.springboot.jwttest.jwt.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
