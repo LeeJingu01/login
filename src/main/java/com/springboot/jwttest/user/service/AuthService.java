@@ -36,6 +36,7 @@ public class AuthService {
         u.setDmOption(true);
         userMapper.insertUser(u);
     }
+    // 테스트
 
     public TokenRes login(LoginReq req) {
         User u = userMapper.selectByLogin(req.login());
