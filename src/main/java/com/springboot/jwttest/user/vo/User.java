@@ -1,25 +1,53 @@
 package com.springboot.jwttest.user.vo;
 
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 
 @Data
+@Entity
+@Table(name = "user")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer userId;        // PK
-    private String id;             // 로그인 ID
+
+    @Column(name="id", nullable=false, length=255)
+    private String id;        // 로그인 ID
+
+    @Column(nullable=false, length=255)
     private String email;
-    private String password;       // BCrypt(60)
+
+    @Column(nullable=false, length=255)
+    private String password;
+
+    @Column(name="profile_image")
     private String profileImage;
+
     private String name;
     private String nickname;
-    private String gender;         // ENUM in DB (M/F 등)
+    private String gender;
     private Integer age;
     private String address;
+
+    @Column(name="phone_number")
     private String phoneNumber;
+
+    @Column(name="dm_option")
     private Boolean dmOption;
-    private String status;         // CHAR (e.g., A/I)
+
+    private String status;
+
+    @Column(name="created_at")
+    @CreationTimestamp
     private LocalDate createdAt;
+
+    @Column(name="updated_at")
+    @UpdateTimestamp
     private LocalDate updatedAt;
 }

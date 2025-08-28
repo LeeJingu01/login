@@ -7,7 +7,10 @@ import com.springboot.jwttest.jwt.auth.dto.TokenRes;
 import com.springboot.jwttest.jwt.security.JwtTokenProvider;
 import com.springboot.jwttest.jwt.security.TokenHashUtil;
 import com.springboot.jwttest.jwt.token.mapper.RefreshTokenMapper;
+import com.springboot.jwttest.jwt.token.repository.RefreshTokenRepository;
+import com.springboot.jwttest.jwt.token.vo.RefreshToken;
 import com.springboot.jwttest.user.mapper.UserMapper;
+import com.springboot.jwttest.user.repository.UserRepository;
 import com.springboot.jwttest.user.vo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,8 +21,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
-    private final RefreshTokenMapper refreshTokenMapper;
+//    private final UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwt;
 
     public void signUp(SignUpReq req) {
@@ -34,13 +38,15 @@ public class AuthService {
         u.setGender("M");
 //        u.setDmOption(req.dm_option());
         u.setDmOption(true);
-        userMapper.insertUser(u);
+        userRepository.save(u);
     }
     // 테스트
 
     public TokenRes login(LoginReq req) {
-        User u = userMapper.selectByLogin(req.login());
-        if (u == null || !passwordEncoder.matches(req.password(), u.getPassword()))
+        User u = userRepository.findByLogin(req.login())
+                .orElseThrow(() -> new BadCredentialsException("아이디/비밀번호가 올바르지 않습니다."));
+
+        if (!passwordEncoder.matches(req.password(), u.getPassword()))
             throw new BadCredentialsException("아이디/비밀번호가 올바르지 않습니다.");
 
         String access  = jwt.createAccessToken(u.getUserId(), u.getNickname());
@@ -48,13 +54,14 @@ public class AuthService {
 
         // Refresh 평문 저장 금지 → 해시 보관
         String hash = TokenHashUtil.sha256Base64(refresh);
-        refreshTokenMapper.upsert(u.getUserId(), hash, jwt.refreshExpiryLdt());
+        RefreshToken rt = new RefreshToken(u.getUserId(), hash, jwt.refreshExpiryLdt());
+        refreshTokenRepository.save(rt);
 
         return new TokenRes(access, refresh, jwt.accessTtlSeconds());
     }
 
     public TokenRes refresh(int userId, String refreshToken) {
-        String savedHash = refreshTokenMapper.selectHashByUserId(userId);
+        String savedHash = refreshTokenRepository.findHashByUserId(userId).orElse(null);
         if (savedHash == null
                 || !jwt.validate(refreshToken) || !jwt.isRefreshToken(refreshToken)
                 || !TokenHashUtil.matchesSha256Base64(refreshToken, savedHash)) {
@@ -63,14 +70,16 @@ public class AuthService {
 
         String newAccess  = jwt.createAccessToken(userId, null);
         String newRefresh = jwt.createRefreshToken(userId);
-        refreshTokenMapper.upsert(userId,
+        refreshTokenRepository.save(new RefreshToken(
+                userId,
                 TokenHashUtil.sha256Base64(newRefresh),
-                jwt.refreshExpiryLdt());
+                jwt.refreshExpiryLdt()
+        ));
 
         return new TokenRes(newAccess, newRefresh, jwt.accessTtlSeconds());
     }
 
     public void logout(int userId) {
-        refreshTokenMapper.deleteByUserId(userId);
+        refreshTokenRepository.deleteById(userId);
     }
 }

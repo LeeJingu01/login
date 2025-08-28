@@ -2,6 +2,7 @@ package com.springboot.jwttest.jwt.auth.controller;
 
 import com.springboot.jwttest.jwt.auth.dto.MeRes;
 import com.springboot.jwttest.user.mapper.UserMapper;
+import com.springboot.jwttest.user.repository.UserRepository;
 import com.springboot.jwttest.user.vo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     @GetMapping("/me")
     public ResponseEntity<MeRes> me(Authentication authentication) {
@@ -24,10 +26,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Integer userId = (Integer) authentication.getPrincipal();
-        User u = userMapper.selectByUserId(userId);
-        if(u == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(MeRes.from(u));
+        return userRepository.findById(userId)
+                .map(user -> ResponseEntity.ok(MeRes.from(user)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
