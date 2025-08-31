@@ -1,8 +1,8 @@
 package com.springboot.jwttest.post.controller;
 
-import com.springboot.jwttest.post.dto.PostRequestDto;
-import com.springboot.jwttest.post.service.PostService;
-import com.springboot.jwttest.post.vo.Post;
+import com.springboot.jwttest.post.model.dto.PostRequestDto;
+import com.springboot.jwttest.post.model.service.PostService;
+import com.springboot.jwttest.post.model.vo.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,7 @@
 package com.springboot.jwttest.jwt.security;
 
-import com.springboot.jwttest.user.mapper.UserMapper;
-import com.springboot.jwttest.user.repository.UserRepository;
-import com.springboot.jwttest.user.vo.User;
+
+import com.springboot.jwttest.user.model.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

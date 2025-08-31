@@ -1,9 +1,9 @@
 package com.springboot.jwttest.jwt.auth.controller;
 
-import com.springboot.jwttest.jwt.auth.dto.LoginReq;
-import com.springboot.jwttest.jwt.auth.dto.SignUpReq;
-import com.springboot.jwttest.jwt.auth.dto.TokenRes;
-import com.springboot.jwttest.user.service.AuthService;
+import com.springboot.jwttest.jwt.auth.dto.LoginRequestDto;
+import com.springboot.jwttest.jwt.auth.dto.SignUpRequestDto;
+import com.springboot.jwttest.jwt.auth.dto.TokenResponseDto;
+import com.springboot.jwttest.user.model.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +17,20 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpReq req) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequestDto req) {
         authService.signUp(req);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenRes> login(@Valid @RequestBody LoginReq req) {
+    public ResponseEntity<TokenResponseDto> login(@Valid @RequestBody LoginRequestDto req) {
         return ResponseEntity.ok(authService.login(req));
     }
 
     // 프론트: Access 만료시 헤더로 userId/refresh 전달(또는 refresh JWT의 subject 사용)
     @PostMapping("/refresh")
-    public ResponseEntity<TokenRes> refresh(@RequestHeader("X-USER-ID") int userId,
-                                            @RequestHeader("X-REFRESH") String refresh) {
+    public ResponseEntity<TokenResponseDto> refresh(@RequestHeader("X-USER-ID") int userId,
+                                                    @RequestHeader("X-REFRESH") String refresh) {
         return ResponseEntity.ok(authService.refresh(userId, refresh));
     }
 
