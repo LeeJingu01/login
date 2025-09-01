@@ -19,6 +19,7 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // pub으로 시작하는 url패턴으로 메시지가 발행되면 @Controller 객체의 @MessageMapping메서드로 라우팅
         registry.setApplicationDestinationPrefixes("/pub");
         registry.enableSimpleBroker("/topic", "/queue",  "/sub");
     }
