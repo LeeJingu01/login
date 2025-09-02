@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Entity
 public class User {
 
+    // feature 테스트
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
