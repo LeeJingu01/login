@@ -15,6 +15,7 @@ public class User {
     // 테스트 2
     // 3
     // 4
+    // 5
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
