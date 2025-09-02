@@ -41,7 +41,7 @@ public class AuthService {
     // 테스트
 
     public TokenResponseDto login(LoginRequestDto req) {
-        User u = userRepository.findById(req.login())
+        User u = userRepository.findById(req.id())
                 .orElseThrow(() -> new BadCredentialsException("아이디/비밀번호가 올바르지 않습니다."));
 
         if (!passwordEncoder.matches(req.password(), u.getPassword()))
