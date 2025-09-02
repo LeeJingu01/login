@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
     private final PostService postService;
 
+    //gd
     private int currentUserId(Authentication auth) {
         Object principal = auth.getPrincipal();
         if(principal instanceof Integer uid){
