@@ -19,6 +19,7 @@ public class User {
     // 6
     // 7
     // 8
+    // 9
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
