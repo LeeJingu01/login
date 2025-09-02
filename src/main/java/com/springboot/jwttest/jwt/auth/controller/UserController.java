@@ -34,7 +34,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public ResponseEntity<?> list(Authentication authentication) {
         List<ListResDto> dto = userService.findAll();
         return new ResponseEntity<>(dto, HttpStatus.OK);
