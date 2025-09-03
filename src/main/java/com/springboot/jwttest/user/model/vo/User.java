@@ -24,6 +24,9 @@ public class User {
     // 11
     // 12
     // pr 테스트
+    // 이슈와 pr 테스트4
+    // test
+    // 삭제하는 기능 추가
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
