@@ -1,7 +1,7 @@
 package com.springboot.jwttest.jwt.security;
 
-import com.springboot.jwttest.user.mapper.UserMapper;
-import com.springboot.jwttest.user.vo.User;
+
+import com.springboot.jwttest.user.model.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,8 @@ import java.util.List;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwt;
-    private final UserMapper userMapper;
+//    private final UserMapper userMapper;
+    private final UserRepository userRepository;
     // 인증,인가
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
@@ -36,12 +37,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = auth.substring(7);
             if (jwt.validate(token) && jwt.isAccessToken(token)) {
                 Integer uid = jwt.userId(token);
-                User u = userMapper.selectByUserId(uid); // 가벼운 조회
-                if (u != null) {
+
+                userRepository.findById(uid).ifPresent(u -> {
                     var authentication = new UsernamePasswordAuthenticationToken(
-                            u.getUserId(), null, List.of()); // 필요 시 ROLE 추가
+                            u.getUserId(), // principal
+                            null,          // credentials (보통 null 처리)
+                            List.of()      // 권한 (ROLE_USER 등 넣을 수 있음)
+                    );
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                });
             }
         }
         chain.doFilter(req, res);
