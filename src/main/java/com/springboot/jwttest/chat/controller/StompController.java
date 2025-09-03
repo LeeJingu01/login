@@ -20,11 +20,11 @@ public class StompController {
     public String message(
             // @MessageMapping 어노테이션으로 정의된 웹소켓 컨트롤러 내에서만 사용
             @DestinationVariable Long chatRoomId,
-            @Payload ChatDto request
+            @Payload String message
             ){
-        log.info("chatRoomId:{}, message: {}",chatRoomId, request.getMessage());
+        log.info("chatRoomId:{}, message: {}",chatRoomId, message);
 
-        return request.getMessage();
+        return message;
     }
 }
 
