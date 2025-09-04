@@ -35,7 +35,7 @@ public class StompController {
     public void sendMessage(@DestinationVariable int chatRoomId, ChatDto message){
 
         System.out.println(message.getMessage());
-        chatService.saMessage(chatRoomId, message);
+        chatService.saveMessage(chatRoomId, message);
         messageTemplate.convertAndSend("/sub/chat/"+chatRoomId, message);
     }
 }
