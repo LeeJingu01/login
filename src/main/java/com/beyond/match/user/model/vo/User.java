@@ -30,7 +30,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer userId;        // PK
+    private int userId;        // PK
 
     @Column(name="id", nullable=false, length=255)
     private String id;        // 로그인 ID

@@ -2,12 +2,15 @@ package com.beyond.match.jwt.auth.controller;
 
 import com.beyond.match.jwt.auth.dto.ListResDto;
 import com.beyond.match.jwt.auth.dto.MeResonseDto;
+import com.beyond.match.jwt.auth.model.UserDetailsImpl;
 import com.beyond.match.user.model.repository.UserRepository;
 import com.beyond.match.user.model.service.UserService;
+import com.beyond.match.user.model.vo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,14 +26,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public ResponseEntity<MeResonseDto> me(Authentication authentication) {
-        if(authentication == null || authentication.getPrincipal() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<MeResonseDto> me(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails==null){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        Integer userId = (Integer) authentication.getPrincipal();
-        return userRepository.findById(userId)
-                .map(user -> ResponseEntity.ok(MeResonseDto.from(user)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        User user = userDetails.getUser();
+        return userRepository.findById(user.getUserId()).map(u -> ResponseEntity.ok(MeResonseDto.from(u)))
+                .orElseGet(()-> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/list")
