@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface ChatParticipantRepository extends JpaRepository<JoinedChatRoom, Integer> {
     List<JoinedChatRoom> findByChatRoom(ChatRoom chatRoom);
     Optional<JoinedChatRoom> findByChatRoomAndUser(ChatRoom chatRoom, User user);
+
+    List<JoinedChatRoom> findAllByUser(User user);
 }
