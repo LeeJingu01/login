@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chatrooms")
+@RequestMapping("api/v1/chatrooms")
 @RequiredArgsConstructor
 public class ChatController {
     private final ChatService chatService;
@@ -24,7 +24,14 @@ public class ChatController {
         return ResponseEntity.ok().build();
     }
 
-    // 그룹채팅목록조회
+    // 개인 채팅방 개설 또는 기존 roomId return
+    @PostMapping("/private/create")
+    public ResponseEntity<?> createOrGetPrivateRoom(@RequestParam int otherUserId) {
+        int roomId = chatService.getOrCreatePrivateRoom(otherUserId);
+        return new ResponseEntity<>(roomId, HttpStatus.OK);
+    }
+
+    // 매칭방리스트조회
     @GetMapping
     public ResponseEntity<?> getAllRooms() {
         List<ChatRoomListResDto> chatRoomListResDtos = chatService.getGroupChatRooms();
@@ -46,7 +53,7 @@ public class ChatController {
     }
 
     // 채팅메시지 읽음처리
-    @PostMapping("/{roodId}/read")
+    @PostMapping("/{roomId}/read")
     public ResponseEntity<?> messageRead(@PathVariable int roomId) {
         chatService.messageRead(roomId);
         return ResponseEntity.ok().build();
@@ -56,14 +63,16 @@ public class ChatController {
     @GetMapping("/my/rooms")
     public ResponseEntity<?> getMyRooms() {
         List<MyChatListResDto> myChatListResDtos = chatService.getMyChatRooms();
-        return new ResponseEntity<>();
+        return new ResponseEntity<>(myChatListResDtos, HttpStatus.OK);
     }
 
     // 채팅방 나가기
-    @DeleteMapping("/group/{roodId}/leave")
+    @DeleteMapping("/group/{roomId}/leave")
     public ResponseEntity<?> leaveGroup(@PathVariable int roomId) {
         chatService.leaveGroupChatRoom(roomId);
         return ResponseEntity.ok().build();
     }
+
+
 
 }
