@@ -4,18 +4,23 @@ import com.beyond.match.chat.model.dto.ChatDto;
 import com.beyond.match.chat.model.dto.ChatRoomListResDto;
 import com.beyond.match.chat.model.dto.MyChatListResDto;
 import com.beyond.match.chat.model.service.ChatService;
+import com.beyond.match.chat.model.service.FileService;
+import com.beyond.match.chat.model.vo.DmFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/chatrooms")
 @RequiredArgsConstructor
 public class ChatController {
     private final ChatService chatService;
+    private final FileService fileService;
 
     @PostMapping("/group/create")
     public ResponseEntity<?> createGroupRoom(@RequestParam String roomName) {
@@ -71,6 +76,22 @@ public class ChatController {
     public ResponseEntity<?> leaveGroup(@PathVariable int roomId) {
         chatService.leaveGroupChatRoom(roomId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{roomId}/{messageId}/upload")
+    public ResponseEntity<?> uploadFile(@PathVariable int roomId, @RequestParam("file") MultipartFile file,
+                                        @PathVariable int messageId) {
+        try {
+            DmFile saveFile = fileService.saveFile(messageId, file);
+            return ResponseEntity.ok(Map.of(
+                    "fileId", saveFile.getFileId(),
+                    "fileUrl", saveFile.getFileUrl(),
+                    "fileType", saveFile.getFileType()
+                    ));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패" + e.getMessage());
+        }
+
     }
 
 
