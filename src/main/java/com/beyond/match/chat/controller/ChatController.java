@@ -6,9 +6,15 @@ import com.beyond.match.chat.model.dto.MyChatListResDto;
 import com.beyond.match.chat.model.service.ChatService;
 import com.beyond.match.chat.model.service.FileService;
 import com.beyond.match.chat.model.vo.DmFile;
+import com.beyond.match.jwt.auth.model.UserDetailsImpl;
+import com.beyond.match.user.model.vo.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +27,7 @@ import java.util.Map;
 public class ChatController {
     private final ChatService chatService;
     private final FileService fileService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/group/create")
     public ResponseEntity<?> createGroupRoom(@RequestParam String roomName) {
@@ -78,22 +85,50 @@ public class ChatController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{roomId}/messages")
+    public ResponseEntity<?> createMessage(@PathVariable int roomId, @RequestBody(required = false) Map<String, String> req) {
+        String content = (req!=null) ? req.getOrDefault("message", "") : "";
+        int messageId = chatService.createMessage(roomId, content);
+        return ResponseEntity.ok(Map.of("messageId", messageId));
+    }
+
     @PostMapping("/{roomId}/{messageId}/upload")
     public ResponseEntity<?> uploadFile(@PathVariable int roomId, @RequestParam("file") MultipartFile file,
                                         @PathVariable int messageId) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        User user = userDetails.getUser();
         try {
             DmFile saveFile = fileService.saveFile(messageId, file);
+            Map<String, Object> msg = Map.of(
+                    "senderNickname", user.getNickname(), // 필요시 SecurityContext에서 유저 닉네임 꺼내서 넣기
+                    "message", "",
+                    "file", Map.of( // ✅ file 객체로 래핑
+                            "fileId", saveFile.getFileId(),
+                            "fileName", saveFile.getFileName(),
+                            "fileType", saveFile.getFileType()
+                    )
+            );
+            messagingTemplate.convertAndSend("/sub/chat/" + roomId, msg);
             return ResponseEntity.ok(Map.of(
                     "fileId", saveFile.getFileId(),
-                    "fileUrl", saveFile.getFileUrl(),
+                    "fileName", saveFile.getFileName(),
                     "fileType", saveFile.getFileType()
-                    ));
+            ));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패" + e.getMessage());
         }
-
     }
 
+    @GetMapping("/files/{fileId}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable int fileId) {
+        DmFile dmFile = fileService.getFile(fileId);
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dmFile.getFileName() + "\"")
+                .contentType(MediaType.parseMediaType(dmFile.getFileType()))
+                .body(dmFile.getFileData());
+    }
 
 
 }

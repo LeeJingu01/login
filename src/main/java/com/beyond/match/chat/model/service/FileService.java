@@ -12,29 +12,28 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final String uploadDir = "src/main/resources/static/uploads";
     public DmFile saveFile(int messageId, MultipartFile file) throws IOException {
         Message message = chatMessageRepository.findById(messageId).orElseThrow(()->
                 new EntityNotFoundException("메시지를 찾을 수 없습니다."));
 
-        String folderPath = uploadDir + "/" + LocalDate.now().getYear() + "/" +
-                String.format("%02d", LocalDate.now().getMonthValue());
-        File folder = new File(folderPath);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-        String filePath = folderPath + "/" + file.getOriginalFilename();
-        file.transferTo(new File(filePath));
         DmFile dmFile = DmFile.builder()
-                .fileUrl(filePath)
+                .fileData(file.getBytes())
+                .message(message)
                 .fileType(file.getContentType())
+                .fileName(file.getOriginalFilename())
                 .build();
         return fileRepository.save(dmFile);
+    }
+
+    public DmFile getFile(int fileId) {
+        return fileRepository.findById(fileId)
+                .orElseThrow(()-> new EntityNotFoundException("파일을 찾을 수 없습니다."));
     }
 }

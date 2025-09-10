@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -238,5 +239,21 @@ public class ChatService {
         addParticipantToRoom(newRoom, otherUser);
 
         return newRoom.getChatRoomId();
+    }
+
+    public int createMessage(int roomId, String content) {
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()-> new EntityNotFoundException("Chat Room Not Found"));
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        User user = userDetails.getUser();
+        Message message = Message.builder()
+                .chatRoom(chatRoom)
+                .content(content)
+                .user(user)
+                .build();
+        Message saved = chatMessageRepository.save(message);
+        return saved.getMessageId();
     }
 }

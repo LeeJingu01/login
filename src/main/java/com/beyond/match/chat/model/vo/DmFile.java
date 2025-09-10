@@ -28,9 +28,12 @@ public class DmFile {
     @JoinColumn(name = "message_id")
     private Message message;
 
-    @Column(name = "file_url", length = 500)
-    private String fileUrl;
+    @Column(name = "file_data", nullable = false, columnDefinition = "LONGBLOB")
+    private byte[] fileData;
 
     @Column(name = "file_type")
     private String fileType;
+
+    @Column(name = "file_name")
+    private String fileName;
 }
